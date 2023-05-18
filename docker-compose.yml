@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+  sql:
+    container_name: sqlv2
+    # lokasi source code
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    build:
+      context: ./
+      dockerfile: sql.Dockerfile
+    # path untuk source di dalam docker
+    image: sql_laravel:1.0
+    ports:
+      - 3306:3306
+
+  nginx:
+    container_name: con_laravelv2
+    # lokasi source code
+    build:
+      context: ./
+      dockerfile: web.dockerfile
+    # path untuk source di dalam docker
+    volumes:
+      - ./:/var/www
+    image: webserver_laravel:1.0
+    ports:
+      - "8070:80"
+
+  app:
+    container_name: app_laravelv2
+    build:
+      context: ./
+      dockerfile: app.dockerfile
+    image: app_laravel:1.0
+    volumes:
+      - ./:/var/www
